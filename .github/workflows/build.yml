@@ -1,0 +1,157 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run linting
+      run: npm run lint
+      
+    - name: Run type checking
+      run: npm run typecheck
+      
+    - name: Build application
+      run: npm run build
+      
+    - name: Build distributables (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: npm run dist:linux
+      
+    - name: Build distributables (Windows)
+      if: matrix.os == 'windows-latest'
+      run: npm run dist:win
+      
+    - name: Build distributables (macOS)
+      if: matrix.os == 'macos-latest'
+      run: npm run dist:mac
+      
+    - name: Create release directories
+      run: |
+        mkdir -p release/Linux
+        mkdir -p release/Windows
+        mkdir -p release/macOS
+      shell: bash
+      
+    - name: Copy Linux artifacts
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        cp build/*.AppImage release/Linux/ 2>/dev/null || true
+        cp build/*.tar.gz release/Linux/ 2>/dev/null || true
+        cp build/*.deb release/Linux/ 2>/dev/null || true
+        cp build/*.rpm release/Linux/ 2>/dev/null || true
+      shell: bash
+      
+    - name: Copy Windows artifacts
+      if: matrix.os == 'windows-latest'
+      run: |
+        copy "build\\*.exe" "release\\Windows\\" 2>nul || echo "No .exe files found"
+        copy "build\\*.msi" "release\\Windows\\" 2>nul || echo "No .msi files found"
+        copy "build\\*.zip" "release\\Windows\\" 2>nul || echo "No .zip files found"
+      shell: cmd
+      
+    - name: Copy macOS artifacts
+      if: matrix.os == 'macos-latest'
+      run: |
+        cp build/*.dmg release/macOS/ 2>/dev/null || true
+        cp build/*.zip release/macOS/ 2>/dev/null || true
+      shell: bash
+      
+    - name: Upload Linux artifacts
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-release
+        path: release/Linux/
+        retention-days: 30
+        
+    - name: Upload Windows artifacts
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-release
+        path: release/Windows/
+        retention-days: 30
+        
+    - name: Upload macOS artifacts
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-release
+        path: release/macOS/
+        retention-days: 30
+
+  merge-artifacts:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+        
+    - name: Create combined release folder
+      run: |
+        mkdir -p release
+        cp -r artifacts/linux-release/* release/ 2>/dev/null || mkdir -p release/Linux
+        cp -r artifacts/windows-release/* release/ 2>/dev/null || mkdir -p release/Windows  
+        cp -r artifacts/macos-release/* release/ 2>/dev/null || mkdir -p release/macOS
+        
+    - name: List release contents
+      run: |
+        echo "Release folder contents:"
+        find release -type f -name "*" | head -20
+        
+    - name: Upload combined release
+      uses: actions/upload-artifact@v4
+      with:
+        name: ssh-organizer-release
+        path: release/
+        retention-days: 90
+
+  # Optional: Create GitHub release on tags
+  release:
+    needs: merge-artifacts
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download release artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: ssh-organizer-release
+        path: release/
+        
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: release/**/*
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
