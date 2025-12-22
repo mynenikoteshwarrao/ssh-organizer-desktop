@@ -96,7 +96,7 @@
   },
   "build": {
     "appId": "com.koteshwar.ssh-connection-manager",
-    "productName": "SSH Connection Manager",
+    "productName": "SSH Organizer",
     "copyright": "Copyright © 2024 Koteshwar Rao Myneni",
     "directories": {
       "output": "build"
@@ -131,7 +131,7 @@
           ]
         }
       ],
-      "icon": "assets/icon-new.icns",
+      "icon": "assets/ssh-organizer-icon.icns",
       "entitlements": "assets/entitlements.mac.plist",
       "entitlementsInherit": "assets/entitlements.mac.plist",
       "hardenedRuntime": true,
@@ -166,13 +166,13 @@
           ]
         }
       ],
-      "icon": "assets/icon-new.ico",
-      "publisherName": "SSH Connection Manager",
+      "icon": "assets/ssh-organizer-icon.ico",
+      "publisherName": "SSH Organizer",
       "verifyUpdateCodeSignature": false
     },
     "linux": {
       "target": "AppImage",
-      "icon": "assets/icon-new.png"
+      "icon": "assets/ssh-organizer-icon.png"
     }
   }
 }

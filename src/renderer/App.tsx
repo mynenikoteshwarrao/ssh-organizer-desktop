@@ -204,7 +204,7 @@ const App: React.FC = () => {
       <div className="app-header">
         <div className="header-brand">
           <div className="brand-logo">
-            <img src="../../assets/icon-new.png" alt="SSH Manager" className="brand-icon" />
+            <img src="../../assets/ssh-organizer-logo.png" alt="SSH Organizer" className="brand-icon" />
           </div>
           <div className="brand-content">
             <h1 className="brand-title">SSH Organizer</h1>

@@ -2,7 +2,7 @@
 
 A professional SSH connection manager desktop application built with Electron, TypeScript, and React.
 
-![SSH Organizer](assets/icon-new.png)
+![SSH Organizer](assets/ssh-organizer-logo.png)
 
 **Version**: 1.0.1
 **Author**: Koteshwar Rao Myneni
