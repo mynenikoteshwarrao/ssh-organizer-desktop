@@ -326,8 +326,43 @@ npm run dist:all     # Build all platform distributions
 npm run postinstall  # Rebuild native modules
 ```
 
-## License
+## 🤝 Support & Community
+
+### Getting Help
+- **📖 Documentation**: Check [BUILD.md](BUILD.md) for development guide
+- **🐛 Report Issues**: [GitHub Issues](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/discussions)
+
+### Contributing
+We welcome contributions! Please check our [GitHub repository](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop) for:
+- 🐛 Bug reports
+- 💡 Feature requests
+- 🔧 Pull requests
+- 📚 Documentation improvements
+
+### Links
+- **📦 npm Package**: https://www.npmjs.com/package/ssh-organizer-desktop
+- **🏠 GitHub Repository**: https://github.com/mynenikoteshwarrao/ssh-organizer-desktop
+- **📥 Latest Releases**: https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases
+
+## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details
 
+**Free & Open Source Software**
 **Copyright © 2024 Koteshwar Rao Myneni**
+
+---
+
+<div align="center">
+
+**Made with ❤️ by [Koteshwar Rao Myneni](https://github.com/mynenikoteshwarrao)**
+
+*SSH Organizer - Professional SSH Connection Management*
+
+[![npm](https://img.shields.io/npm/v/ssh-organizer-desktop)](https://www.npmjs.com/package/ssh-organizer-desktop)
+[![Downloads](https://img.shields.io/npm/dt/ssh-organizer-desktop)](https://www.npmjs.com/package/ssh-organizer-desktop)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/mynenikoteshwarrao/ssh-organizer-desktop)](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop)
+
+</div>
