@@ -173,14 +173,6 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleConnectionClose = async (connectionId: string) => {
-    await handleDisconnect(connectionId);
-    // Hide terminals panel if no more active connections
-    if (state.activeConnections.length <= 1) {
-      // External terminals handle their own lifecycle
-    }
-  };
-
   // External terminals don't need toggle - they open in system Terminal app
 
   const handleClearLogs = async () => {

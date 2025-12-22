@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { LogEntry } from '../../logger';
 
 interface LoggerProps {
@@ -16,15 +16,6 @@ const Logger: React.FC<LoggerProps> = ({ logs, onClear }) => {
       case 'error': return '❌';
       case 'warning': return '⚠️';
       default: return 'ℹ️';
-    }
-  };
-
-  const getLogColor = (level: LogEntry['level']) => {
-    switch (level) {
-      case 'success': return '#10b981';
-      case 'error': return '#ef4444';
-      case 'warning': return '#f59e0b';
-      default: return '#6b7280';
     }
   };
 

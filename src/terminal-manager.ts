@@ -2,15 +2,17 @@ import * as os from 'os';
 import * as path from 'path';
 
 // Dynamic import to handle asar unpacked modules
+import { app } from 'electron';
 let pty: any;
 try {
   // Try loading from unpacked location first
-  const { app } = require('electron');
   const unpackedPath = path.join(app.getAppPath().replace('.asar', '.asar.unpacked'), 'node_modules', 'node-pty');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   pty = require(unpackedPath);
 } catch (error) {
   // Fallback to normal require for development
   try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     pty = require('node-pty');
   } catch (fallbackError) {
     console.error('Failed to load node-pty:', fallbackError);
@@ -178,6 +180,7 @@ export class TerminalManager extends EventEmitter {
         }
 
         // Check if private key file exists
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const fs = require('fs');
         if (!fs.existsSync(profile.privateKeyPath)) {
           return { success: false, error: 'Private key file not found' };

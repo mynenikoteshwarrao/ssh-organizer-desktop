@@ -1,8 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
-import * as keytar from 'keytar';
-import { spawn } from 'child_process';
-import { ConnectionProfile, AuthType } from './types';
+import { ConnectionProfile } from './types';
 import { ConnectionManager } from './connection-manager';
 import { logger } from './logger';
 

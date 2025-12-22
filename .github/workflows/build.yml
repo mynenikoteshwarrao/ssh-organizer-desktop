@@ -25,16 +25,7 @@ jobs:
         cache: 'npm'
         
     - name: Install dependencies
-      run: |
-        npm ci
-        npm install --save-dev @typescript-eslint/eslint-plugin@^6.13.0 @typescript-eslint/parser@^6.13.0
-      
-    - name: Verify ESLint setup
-      run: |
-        echo "Checking ESLint dependencies..."
-        npm list @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint || true
-        echo "ESLint config file:"
-        cat .eslintrc.js
+      run: npm ci
       
     - name: Run linting
       run: npm run lint
