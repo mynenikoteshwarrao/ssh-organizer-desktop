@@ -33,20 +33,36 @@ jobs:
     - name: Run type checking
       run: npm run typecheck
       
+    - name: Create logs directory
+      run: mkdir -p logs
+      shell: bash
+      
     - name: Build application
-      run: npm run build
+      run: |
+        npm run build 2>&1 | tee logs/build-${{ matrix.os }}.log
+        exit ${PIPESTATUS[0]}
+      shell: bash
       
     - name: Build distributables (Linux)
       if: matrix.os == 'ubuntu-latest'
-      run: npm run dist:linux
+      run: |
+        npm run dist:linux 2>&1 | tee logs/dist-linux.log
+        exit ${PIPESTATUS[0]}
+      shell: bash
       
     - name: Build distributables (Windows)
       if: matrix.os == 'windows-latest'
-      run: npm run dist:win
+      run: |
+        npm run dist:win 2>&1 | tee logs/dist-windows.log
+        if (!$?) { exit 1 }
+      shell: powershell
       
     - name: Build distributables (macOS)
       if: matrix.os == 'macos-latest'
-      run: npm run dist:mac
+      run: |
+        npm run dist:mac 2>&1 | tee logs/dist-macos.log
+        exit ${PIPESTATUS[0]}
+      shell: bash
       
     - name: Create release directories
       run: |
@@ -87,6 +103,14 @@ jobs:
         path: release/Linux/
         retention-days: 30
         
+    - name: Upload Linux logs
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-logs
+        path: logs/
+        retention-days: 30
+        
     - name: Upload Windows artifacts
       if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v4
@@ -95,12 +119,28 @@ jobs:
         path: release/Windows/
         retention-days: 30
         
+    - name: Upload Windows logs
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-logs
+        path: logs/
+        retention-days: 30
+        
     - name: Upload macOS artifacts
       if: matrix.os == 'macos-latest'
       uses: actions/upload-artifact@v4
       with:
         name: macos-release
         path: release/macOS/
+        retention-days: 30
+        
+    - name: Upload macOS logs
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-logs
+        path: logs/
         retention-days: 30
 
   merge-artifacts:
@@ -114,23 +154,35 @@ jobs:
       with:
         path: artifacts
         
-    - name: Create combined release folder
+    - name: Create combined release and logs folders
       run: |
-        mkdir -p release
+        mkdir -p release logs
         cp -r artifacts/linux-release/* release/ 2>/dev/null || mkdir -p release/Linux
         cp -r artifacts/windows-release/* release/ 2>/dev/null || mkdir -p release/Windows  
         cp -r artifacts/macos-release/* release/ 2>/dev/null || mkdir -p release/macOS
+        cp -r artifacts/linux-logs/* logs/ 2>/dev/null || true
+        cp -r artifacts/windows-logs/* logs/ 2>/dev/null || true
+        cp -r artifacts/macos-logs/* logs/ 2>/dev/null || true
         
-    - name: List release contents
+    - name: List release and logs contents
       run: |
         echo "Release folder contents:"
         find release -type f -name "*" | head -20
+        echo "Logs folder contents:"
+        find logs -type f -name "*" 2>/dev/null || echo "No log files found"
         
     - name: Upload combined release
       uses: actions/upload-artifact@v4
       with:
         name: ssh-organizer-release
         path: release/
+        retention-days: 90
+        
+    - name: Upload combined logs
+      uses: actions/upload-artifact@v4
+      with:
+        name: ssh-organizer-logs
+        path: logs/
         retention-days: 90
 
   # Optional: Create GitHub release on tags
