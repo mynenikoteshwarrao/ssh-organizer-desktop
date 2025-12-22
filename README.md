@@ -11,7 +11,7 @@
 
 | 🍎 **macOS** | 🪟 **Windows** | 🐧 **Linux** | 📦 **npm** |
 |:---:|:---:|:---:|:---:|
-| [**Download DMG**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1.dmg)<br>*97 MB* | [**Download ZIP**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-win.zip)<br>*102 MB* | [**Download AppImage**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-arm64.AppImage)<br>*102 MB* | `npm i -g ssh-organizer-desktop` |
+| [**Download DMG**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.2/SSH-Organizer-1.0.2.dmg)<br>*97 MB* | [**Download ZIP**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.2/SSH-Organizer-1.0.2-win.zip)<br>*102 MB* | [**Download AppImage**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.2/SSH-Organizer-1.0.2-arm64.AppImage)<br>*102 MB* | `npm i -g ssh-organizer-desktop` |
 
 [![npm version](https://img.shields.io/npm/v/ssh-organizer-desktop.svg)](https://www.npmjs.com/package/ssh-organizer-desktop)
 [![Downloads](https://img.shields.io/npm/dt/ssh-organizer-desktop.svg)](https://www.npmjs.com/package/ssh-organizer-desktop)
@@ -22,7 +22,7 @@
 
 </div>
 
-**Version**: 1.0.1
+**Version**: 1.0.2
 **Author**: Koteshwar Rao Myneni
 **License**: MIT (Free Software)
 **npm Package**: [ssh-organizer-desktop](https://www.npmjs.com/package/ssh-organizer-desktop)
