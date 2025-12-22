@@ -1,6 +1,6 @@
 {
   "name": "ssh-organizer-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Professional SSH connection manager desktop application built with Electron. Secure credential storage, cross-platform support, and external terminal integration.",
   "main": "dist/main.js",
   "homepage": "https://github.com/mynenikoteshwarrao/ssh-organizer-desktop#readme",
