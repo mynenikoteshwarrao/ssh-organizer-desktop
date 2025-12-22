@@ -15,7 +15,8 @@
     "dist:linux": "npm run build && electron-builder --linux",
     "dist:all": "npm run build && electron-builder --mac --win --linux",
     "lint": "eslint src --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [
     "ssh",
@@ -56,39 +57,84 @@
     "react-dom": "^18.2.0"
   },
   "build": {
-    "appId": "com.yourcompany.ssh-manager",
+    "appId": "com.koteshwar.ssh-connection-manager",
     "productName": "SSH Connection Manager",
+    "copyright": "Copyright © 2024 Koteshwar",
     "directories": {
       "output": "build"
     },
     "files": [
       "dist/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "!node_modules/.cache"
+    ],
+    "extraMetadata": {
+      "main": "dist/main.js"
+    },
+    "asarUnpack": [
+      "node_modules/node-pty/**/*",
+      "node_modules/keytar/**/*"
     ],
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.developer-tools",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "assets/icon-new.icns",
+      "entitlements": "assets/entitlements.mac.plist",
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "darkModeSupport": true,
+      "asarUnpack": [
+        "node_modules/node-pty/**/*",
+        "node_modules/keytar/**/*"
+      ]
     },
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         },
         {
           "target": "zip",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ],
-      "icon": "assets/icon.ico",
+      "icon": "assets/icon-new.ico",
       "publisherName": "SSH Connection Manager",
       "verifyUpdateCodeSignature": false
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "assets/icon-new.png"
     }
   }
 }

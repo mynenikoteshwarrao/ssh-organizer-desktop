@@ -241,39 +241,39 @@ export class ConnectionManager {
       }
 
       this.recentConnections.set(id, now);
-      logger.info(`Initiating embedded SSH connection to: ${profile?.name || id}`);
+      logger.info(`Initiating external terminal SSH connection to: ${profile?.name || id}`);
 
       if (!profile) {
         return { success: false, error: 'Connection not found' };
       }
 
-      // Create embedded terminal connection instead of external terminal
-      const terminalId = `terminal_${id}_${Date.now()}`;
-      const terminalResult = await this.createTerminal(terminalId, id);
+      // Launch external terminal with SSH connection
+      const terminalResult = await this.launchExternalTerminal(profile);
 
       if (terminalResult.success) {
         // Create active connection record
         const activeConnection: ActiveConnection = {
-          id: terminalId,
+          id: `conn_${id}_${Date.now()}`,
           profileId: profile.id,
           profileName: profile.name,
           hostname: profile.hostname,
           username: profile.username,
           port: profile.port,
           startTime: new Date().toISOString(),
-          status: ConnectionStatus.CONNECTED
+          status: ConnectionStatus.CONNECTED,
+          terminalPid: terminalResult.pid
         };
 
-        this.activeConnections.set(terminalId, activeConnection);
-        logger.success(`Embedded SSH connection to '${profile.name}' created successfully`);
+        this.activeConnections.set(activeConnection.id, activeConnection);
+        logger.success(`External SSH connection to '${profile.name}' launched successfully`);
 
         return {
           success: true,
-          message: 'Embedded SSH connection created',
-          activeConnectionId: terminalId
+          message: 'SSH connection launched in external terminal',
+          activeConnectionId: activeConnection.id
         };
       } else {
-        logger.error(`Failed to create embedded terminal for '${profile.name}': ${terminalResult.error}`);
+        logger.error(`Failed to launch external terminal for '${profile.name}': ${terminalResult.error}`);
         return terminalResult;
       }
     } catch (error) {
@@ -395,6 +395,65 @@ export class ConnectionManager {
       return { success: true, args };
     } catch (error) {
       return { success: false, error: 'Failed to build SSH arguments' };
+    }
+  }
+
+  private async launchExternalTerminal(profile: ConnectionProfile): Promise<{ success: boolean; pid?: number; error?: string }> {
+    try {
+      logger.info(`Launching external terminal for ${profile.name}`);
+      const sshArgs = await this.buildSSHArgs(profile);
+      if (!sshArgs.success) {
+        logger.error(`Failed to build SSH args for ${profile.name}: ${sshArgs.error}`);
+        return { success: false, error: sshArgs.error };
+      }
+
+      logger.info(`SSH args for ${profile.name}: ${sshArgs.args?.join(' ')}`);
+      let terminalProcess;
+
+      if (process.platform === 'darwin') {
+        // macOS - Use AppleScript to open Terminal.app with SSH command
+        const sshCommand = `ssh ${sshArgs.args?.join(' ') || ''}`;
+        logger.info(`Executing SSH command: ${sshCommand}`);
+
+        terminalProcess = spawn('osascript', [
+          '-e', 'tell application "Terminal" to activate',
+          '-e', `tell application "Terminal" to do script "${sshCommand}"`
+        ], {
+          detached: true,
+          stdio: ['ignore', 'pipe', 'pipe']
+        });
+
+        // Handle process events for debugging
+        terminalProcess.on('error', (error) => {
+          logger.error(`Terminal process error: ${error.message}`);
+        });
+
+        terminalProcess.on('exit', (code, signal) => {
+          logger.info(`Terminal process exited with code ${code}, signal ${signal}`);
+        });
+      } else if (process.platform === 'win32') {
+        // Windows - Use cmd to start a new command prompt with SSH
+        const sshCommand = `ssh ${sshArgs.args?.join(' ') || ''}`;
+        terminalProcess = spawn('cmd', ['/c', 'start', 'cmd', '/k', sshCommand], {
+          detached: true,
+          stdio: 'ignore'
+        });
+      } else {
+        // Linux - Use gnome-terminal or default terminal
+        const sshCommand = `ssh ${sshArgs.args?.join(' ') || ''}`;
+        terminalProcess = spawn('gnome-terminal', ['--', 'bash', '-c', `${sshCommand}; exec bash`], {
+          detached: true,
+          stdio: 'ignore'
+        });
+      }
+
+      terminalProcess.unref();
+
+      logger.info(`External terminal launched for ${profile.name} with PID: ${terminalProcess.pid}`);
+      return { success: true, pid: terminalProcess.pid };
+    } catch (error) {
+      logger.error(`Failed to launch external terminal for ${profile.name}`, error instanceof Error ? error.message : String(error));
+      return { success: false, error: 'Failed to launch external terminal' };
     }
   }
 

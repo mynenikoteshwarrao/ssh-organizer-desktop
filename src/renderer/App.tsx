@@ -4,7 +4,7 @@ import { LogEntry } from '../logger';
 import ConnectionList from './components/ConnectionList';
 import ConnectionForm from './components/ConnectionForm';
 import ActiveConnections from './components/ActiveConnections';
-import TerminalManager from './components/TerminalManager';
+// External terminals are used - no embedded terminal manager needed
 import Logger from './components/Logger';
 import './styles/App.css';
 
@@ -15,7 +15,6 @@ interface AppState {
   showForm: boolean;
   loading: boolean;
   logs: LogEntry[];
-  showTerminals: boolean;
 }
 
 const App: React.FC = () => {
@@ -26,7 +25,6 @@ const App: React.FC = () => {
     showForm: false,
     loading: true,
     logs: [],
-    showTerminals: false,
   });
 
   useEffect(() => {
@@ -131,7 +129,7 @@ const App: React.FC = () => {
     } else {
       // Refresh active connections and show terminals after successful connection
       await loadActiveConnections();
-      setState(prev => ({ ...prev, showTerminals: true }));
+      // External terminal launched - no UI state change needed
     }
   };
 
@@ -179,13 +177,11 @@ const App: React.FC = () => {
     await handleDisconnect(connectionId);
     // Hide terminals panel if no more active connections
     if (state.activeConnections.length <= 1) {
-      setState(prev => ({ ...prev, showTerminals: false }));
+      // External terminals handle their own lifecycle
     }
   };
 
-  const toggleTerminals = () => {
-    setState(prev => ({ ...prev, showTerminals: !prev.showTerminals }));
-  };
+  // External terminals don't need toggle - they open in system Terminal app
 
   const handleClearLogs = async () => {
     try {
@@ -213,13 +209,9 @@ const App: React.FC = () => {
               + New
             </button>
             {state.activeConnections.length > 0 && (
-              <button
-                className={`btn btn-secondary ${state.showTerminals ? 'active' : ''}`}
-                onClick={toggleTerminals}
-                title={state.showTerminals ? 'Hide Terminals' : 'Show Terminals'}
-              >
-                Terminal
-              </button>
+              <span className="external-terminal-info">
+                {state.activeConnections.length} external terminal{state.activeConnections.length > 1 ? 's' : ''} active
+              </span>
             )}
           </div>
         </div>
@@ -232,12 +224,7 @@ const App: React.FC = () => {
       </div>
 
       <div className="app-main">
-        {state.showTerminals ? (
-          <TerminalManager
-            activeConnections={state.activeConnections}
-            onConnectionClose={handleConnectionClose}
-          />
-        ) : state.showForm && state.selectedConnection ? (
+        {state.showForm && state.selectedConnection ? (
           <ConnectionForm
             connection={state.selectedConnection}
             onSave={handleSaveConnection}

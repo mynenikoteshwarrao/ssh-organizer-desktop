@@ -1,13 +1,29 @@
-import * as pty from 'node-pty';
 import * as os from 'os';
 import * as path from 'path';
+
+// Dynamic import to handle asar unpacked modules
+let pty: any;
+try {
+  // Try loading from unpacked location first
+  const { app } = require('electron');
+  const unpackedPath = path.join(app.getAppPath().replace('.asar', '.asar.unpacked'), 'node_modules', 'node-pty');
+  pty = require(unpackedPath);
+} catch (error) {
+  // Fallback to normal require for development
+  try {
+    pty = require('node-pty');
+  } catch (fallbackError) {
+    console.error('Failed to load node-pty:', fallbackError);
+    throw fallbackError;
+  }
+}
 import { EventEmitter } from 'events';
 import { TerminalSession, ConnectionProfile, AuthType } from './types';
 import { logger } from './logger';
 
 export interface TerminalProcess {
   id: string;
-  ptyProcess: pty.IPty;
+  ptyProcess: any; // Using any since we're dynamically loading pty
   session: TerminalSession;
 }
 
@@ -84,7 +100,7 @@ export class TerminalManager extends EventEmitter {
       });
 
       // Handle PTY exit
-      ptyProcess.onExit((exitCode) => {
+      ptyProcess.onExit((exitCode: { exitCode: number; signal?: number }) => {
         logger.info(`Terminal ${terminalId} exited with code ${exitCode.exitCode}`);
         this.emit('close', terminalId);
         this.terminals.delete(terminalId);

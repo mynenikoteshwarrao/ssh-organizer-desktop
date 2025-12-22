@@ -23,7 +23,10 @@
     "src/main.ts",
     "src/preload.ts",
     "src/connection-manager.ts",
-    "src/types.ts"
+    "src/terminal-manager.ts",
+    "src/logger.ts",
+    "src/types.ts",
+    "src/node-pty.d.ts"
   ],
   "exclude": [
     "node_modules",
