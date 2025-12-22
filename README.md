@@ -72,8 +72,25 @@ npm install
 npm start
 ```
 
-### Development Prerequisites
+### 📋 System Requirements
 
+#### Minimum Requirements
+- **macOS**: 10.15 (Catalina) or later
+- **Windows**: Windows 10 or later
+- **Linux**: Ubuntu 18.04+ or equivalent
+- **Memory**: 4 GB RAM minimum (8 GB recommended)
+- **Storage**: 200 MB free space
+- **Network**: Internet connection for initial download
+
+#### For npm Installation
+- **Node.js**: v18.0.0 or later
+- **npm**: v8.0.0 or later
+
+### 🛠️ Development Setup
+
+For developers who want to build from source:
+
+#### Prerequisites
 - **Node.js** v18.20.3 or later
 - **npm** (comes with Node.js)
 - **Platform-specific build tools**:
@@ -81,12 +98,11 @@ npm start
   - **Windows**: Visual Studio Build Tools or Visual Studio Community
   - **Linux**: `build-essential python3 git` (Ubuntu/Debian)
 
-### Development Setup
-
+#### Build Instructions
 1. **Clone and install dependencies**:
    ```bash
-   git clone <repository-url>
-   cd ssh-connection-manager
+   git clone https://github.com/mynenikoteshwarrao/ssh-organizer-desktop.git
+   cd ssh-organizer-desktop
    npm install
    ```
 
@@ -102,6 +118,14 @@ npm start
    # or
    npm start            # Start built application
    ```
+
+#### Build for Distribution
+```bash
+npm run dist:all     # Build all platforms
+npm run dist:mac     # macOS only
+npm run dist:win     # Windows only
+npm run dist:linux   # Linux only
+```
 
 ### Building for Distribution
 
