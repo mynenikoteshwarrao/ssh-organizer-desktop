@@ -201,7 +201,22 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <div className="app-sidebar">
+      <div className="app-header">
+        <div className="header-brand">
+          <div className="brand-logo">
+            <img src="../../assets/icon-new.png" alt="SSH Manager" className="brand-icon" />
+          </div>
+          <div className="brand-content">
+            <h1 className="brand-title">SSH Organizer</h1>
+            <div className="brand-subtitle">Professional SSH Connection Management</div>
+          </div>
+        </div>
+        <div className="header-watermark">
+          Myneni
+        </div>
+      </div>
+      <div className="app-body">
+        <div className="app-sidebar">
         <div className="sidebar-header">
           <h2>SSH Connections</h2>
           <div className="sidebar-actions">
@@ -221,9 +236,9 @@ const App: React.FC = () => {
           onEdit={handleEditConnection}
           onDelete={handleDeleteConnection}
         />
-      </div>
+        </div>
 
-      <div className="app-main">
+        <div className="app-main">
         {state.showForm && state.selectedConnection ? (
           <ConnectionForm
             connection={state.selectedConnection}
@@ -253,6 +268,7 @@ const App: React.FC = () => {
             <Logger logs={state.logs} onClear={handleClearLogs} />
           </div>
         )}
+        </div>
       </div>
     </div>
   );

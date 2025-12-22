@@ -1,8 +1,16 @@
 {
-  "name": "ssh-connection-manager",
+  "name": "ssh-organizer-desktop",
   "version": "1.0.0",
-  "description": "Secure desktop SSH connection manager",
+  "description": "Professional SSH connection manager desktop application built with Electron. Secure credential storage, cross-platform support, and external terminal integration.",
   "main": "dist/main.js",
+  "homepage": "https://github.com/mynenikoteshwarrao/ssh-organizer-desktop#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mynenikoteshwarrao/ssh-organizer-desktop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/issues"
+  },
   "scripts": {
     "build": "tsc && npm run build:renderer",
     "build:renderer": "webpack --config webpack.config.js --mode=production",
@@ -16,16 +24,46 @@
     "dist:all": "npm run build && electron-builder --mac --win --linux",
     "lint": "eslint src --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "prepublishOnly": "npm run build && npm run typecheck",
+    "prepare": "npm run build",
+    "prepack": "npm run build"
   },
   "keywords": [
     "ssh",
+    "ssh-client",
+    "ssh-manager",
+    "ssh-organizer",
     "desktop",
+    "electron",
     "security",
-    "electron"
+    "connection-manager",
+    "terminal",
+    "cross-platform",
+    "keychain",
+    "credentials",
+    "private-key",
+    "remote-access",
+    "developer-tools"
   ],
-  "author": "Your Name",
+  "author": {
+    "name": "Koteshwar Rao Myneni",
+    "email": "koteshwar.myneni@gmail.com",
+    "url": "https://github.com/koteshwar-myneni"
+  },
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "os": [
+    "darwin",
+    "win32",
+    "linux"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.45",
@@ -59,7 +97,7 @@
   "build": {
     "appId": "com.koteshwar.ssh-connection-manager",
     "productName": "SSH Connection Manager",
-    "copyright": "Copyright © 2024 Koteshwar",
+    "copyright": "Copyright © 2024 Koteshwar Rao Myneni",
     "directories": {
       "output": "build"
     },
