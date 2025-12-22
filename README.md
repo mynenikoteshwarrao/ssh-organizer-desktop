@@ -1,12 +1,14 @@
-# SSH Connection Manager
+# SSH Organizer
 
-A secure desktop SSH connection manager application built with Electron, TypeScript, and React.
+A professional SSH connection manager desktop application built with Electron, TypeScript, and React.
 
-![SSH Connection Manager](assets/icon.png)
+![SSH Organizer](assets/icon-new.png)
 
-**Version**: 1.0.0
+**Version**: 1.0.1
 **Author**: Koteshwar Rao Myneni
-**License**: MIT
+**License**: MIT (Free Software)
+**npm Package**: [ssh-organizer-desktop](https://www.npmjs.com/package/ssh-organizer-desktop)
+**GitHub**: [mynenikoteshwarrao/ssh-organizer-desktop](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop)
 
 ## Features
 
@@ -16,7 +18,7 @@ A secure desktop SSH connection manager application built with Electron, TypeScr
 - **Local-Only**: No cloud sync, all data stays on your machine
 - **Easy Connection Management**: Add, edit, delete, and quickly connect to SSH servers
 - **External Terminal Integration**: Opens SSH connections in your system's terminal application
-- **Professional UI**: Custom cybersecurity-themed logo and polished interface
+- **Professional UI**: SSH Organizer branding with Myneni watermark and cybersecurity-themed design
 - **Connection Tracking**: Monitor active external terminal sessions
 - **Activity Logger**: Real-time activity tracking with expandable log viewer
 
@@ -27,15 +29,48 @@ A secure desktop SSH connection manager application built with Electron, TypeScr
 - Encrypted storage for connection metadata
 - No session logging or credential exposure
 
-## Installation
+## 📥 Download & Installation
 
-### Quick Installation (Pre-built)
+### 🚀 Quick Installation (Recommended)
 
-Download the latest release for your platform:
+Install globally via npm (requires Node.js):
 
-- **macOS**: `SSH Connection Manager-1.0.0.dmg` (Intel) or `SSH Connection Manager-1.0.0-arm64.dmg` (Apple Silicon)
-- **Windows**: `SSH Connection Manager-1.0.0-win.zip`
-- **Linux**: `SSH Connection Manager-1.0.0-arm64.AppImage`
+```bash
+npm install -g ssh-organizer-desktop
+ssh-organizer-desktop
+```
+
+### 💾 Platform-Specific Downloads
+
+Download the latest pre-built applications:
+
+#### 🍎 **macOS**
+- **Intel (x64)**: [SSH Organizer-1.0.1.dmg](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1.dmg) (97 MB)
+- **Apple Silicon (ARM64)**: [SSH Organizer-1.0.1-arm64.dmg](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-arm64.dmg) (92 MB)
+- **Portable (Intel)**: [SSH Organizer-1.0.1-mac.zip](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-mac.zip) (94 MB)
+- **Portable (ARM64)**: [SSH Organizer-1.0.1-arm64-mac.zip](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-arm64-mac.zip) (89 MB)
+
+#### 🪟 **Windows**
+- **Windows 10/11**: [SSH Organizer-1.0.1-win.zip](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-win.zip) (102 MB)
+- **Installer**: [SSH Organizer Setup-1.0.1.exe](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-Setup-1.0.1.exe) (102 MB)
+
+#### 🐧 **Linux**
+- **AppImage (Universal)**: [SSH Organizer-1.0.1-arm64.AppImage](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-arm64.AppImage) (102 MB)
+
+### 🔧 Alternative Installation Methods
+
+#### Via npx (No Installation Required)
+```bash
+npx ssh-organizer-desktop
+```
+
+#### From Source
+```bash
+git clone https://github.com/mynenikoteshwarrao/ssh-organizer-desktop.git
+cd ssh-organizer-desktop
+npm install
+npm start
+```
 
 ### Development Prerequisites
 
