@@ -1,14 +1,54 @@
 # SSH Organizer
 
-A professional SSH connection manager desktop application built with Electron, TypeScript, and React.
+<div align="center">
 
 ![SSH Organizer](assets/ssh-organizer-logo.png)
+
+**Professional SSH connection manager desktop application**
+*Built with Electron, TypeScript, and React*
+
+### 🎯 **One-Click Download**
+
+| 🍎 **macOS** | 🪟 **Windows** | 🐧 **Linux** | 📦 **npm** |
+|:---:|:---:|:---:|:---:|
+| [**Download DMG**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1.dmg)<br>*97 MB* | [**Download ZIP**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-win.zip)<br>*102 MB* | [**Download AppImage**](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop/releases/download/v1.0.1/SSH-Organizer-1.0.1-arm64.AppImage)<br>*102 MB* | `npm i -g ssh-organizer-desktop` |
+
+[![npm version](https://img.shields.io/npm/v/ssh-organizer-desktop.svg)](https://www.npmjs.com/package/ssh-organizer-desktop)
+[![Downloads](https://img.shields.io/npm/dt/ssh-organizer-desktop.svg)](https://www.npmjs.com/package/ssh-organizer-desktop)
+[![GitHub](https://img.shields.io/github/stars/mynenikoteshwarrao/ssh-organizer-desktop.svg)](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+---
+
+</div>
 
 **Version**: 1.0.1
 **Author**: Koteshwar Rao Myneni
 **License**: MIT (Free Software)
 **npm Package**: [ssh-organizer-desktop](https://www.npmjs.com/package/ssh-organizer-desktop)
 **GitHub**: [mynenikoteshwarrao/ssh-organizer-desktop](https://github.com/mynenikoteshwarrao/ssh-organizer-desktop)
+
+## 🚀 **Get Started in 30 Seconds**
+
+### Option 1: Direct Download (Recommended)
+1. **Click your platform** in the download table above
+2. **Extract/Install** the downloaded file
+3. **Run SSH Organizer** and start managing your SSH connections!
+
+### Option 2: Install via npm
+```bash
+# Install globally
+npm install -g ssh-organizer-desktop
+
+# Launch SSH Organizer
+ssh-organizer-desktop
+```
+
+### Option 3: Run without installation
+```bash
+# Use npx to run directly
+npx ssh-organizer-desktop
+```
 
 ## Features
 
