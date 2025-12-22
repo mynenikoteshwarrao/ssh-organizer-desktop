@@ -154,21 +154,25 @@ build/
 └── SSH Connection Manager-1.0.0-arm64.AppImage   # Linux portable (102MB)
 ```
 
-## Usage
+## 🚀 Getting Started
 
-1. **Add Connection**: Click "New" to add a new SSH connection
-2. **Configure Authentication**: Choose between private key or password authentication
-3. **Save Credentials**: Passwords and passphrases are stored securely in your system keychain
-4. **Connect**: Click "Connect" on any saved connection to launch SSH in an external terminal
+### Quick Start Guide
 
-### How It Works
+1. **📥 Install**: Download for your platform or run `npm install -g ssh-organizer-desktop`
+2. **🔑 Add Connection**: Click "New" to add your first SSH connection
+3. **⚙️ Configure Authentication**: Choose private key, private key with passphrase, or username/password
+4. **💾 Save Credentials**: Passwords and passphrases are stored securely in your OS keychain
+5. **🖥️ Connect**: Click "Connect" to launch SSH in your system's terminal
 
-- **External Terminal Integration**: SSH connections open in your system's default terminal:
-  - **macOS**: Terminal.app
-  - **Windows**: Command Prompt
-  - **Linux**: gnome-terminal (or default terminal)
-- **Connection Tracking**: The app monitors active external terminal sessions
-- **Secure Credentials**: Private keys and passwords are handled securely without exposure
+### How SSH Organizer Works
+
+- **🖥️ External Terminal Integration**: SSH connections open in your system's native terminal:
+  - **macOS**: Terminal.app or iTerm2
+  - **Windows**: Command Prompt, PowerShell, or Windows Terminal
+  - **Linux**: gnome-terminal, konsole, or your default terminal
+- **📊 Connection Tracking**: Monitor and manage active terminal sessions
+- **🔒 Secure Credentials**: Private keys and passwords handled securely without exposure
+- **☁️ Local Only**: No cloud sync - all data stays on your machine
 
 ## Authentication Types
 
