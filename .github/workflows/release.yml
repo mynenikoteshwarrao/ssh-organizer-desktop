@@ -1,0 +1,153 @@
+name: Release Deployment
+
+on:
+  workflow_run:
+    workflows: ["Build and Release"]
+    types:
+      - completed
+    branches:
+      - master
+
+jobs:
+  release-deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download all build artifacts
+      uses: actions/github-script@v7
+      with:
+        script: |
+          let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             run_id: ${{ github.event.workflow_run.id }},
+          });
+          let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
+            return artifact.name.includes("release");
+          });
+          for (const artifact of matchArtifacts) {
+            let download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: artifact.id,
+               archive_format: 'zip',
+            });
+            let fs = require('fs');
+            fs.writeFileSync(`${artifact.name}.zip`, Buffer.from(download.data));
+          }
+
+    - name: Extract and organize artifacts
+      run: |
+        echo "Creating release directory structure..."
+        mkdir -p release/{macOS,Windows,Linux}
+
+        # Extract artifacts if they exist
+        for zip_file in *-release.zip; do
+          if [ -f "$zip_file" ]; then
+            echo "Extracting $zip_file..."
+            unzip -q "$zip_file" -d temp_extract/
+
+            # Copy contents to appropriate release folders
+            if [ -d "temp_extract/macOS" ]; then
+              cp -r temp_extract/macOS/* release/macOS/ 2>/dev/null || true
+            fi
+            if [ -d "temp_extract/Windows" ]; then
+              cp -r temp_extract/Windows/* release/Windows/ 2>/dev/null || true
+            fi
+            if [ -d "temp_extract/Linux" ]; then
+              cp -r temp_extract/Linux/* release/Linux/ 2>/dev/null || true
+            fi
+
+            # Clean up
+            rm -rf temp_extract/
+          fi
+        done
+
+        # Also handle the combined ssh-organizer-release artifact
+        if [ -f "ssh-organizer-release.zip" ]; then
+          echo "Extracting ssh-organizer-release.zip..."
+          unzip -q "ssh-organizer-release.zip" -d ssh_organizer_release/
+
+          # Copy all contents to release folder
+          if [ -d "ssh_organizer_release" ]; then
+            cp -r ssh_organizer_release/* release/ 2>/dev/null || true
+          fi
+
+          rm -rf ssh_organizer_release/
+        fi
+
+    - name: List and validate release contents
+      run: |
+        echo "=== Release Directory Contents ==="
+        find release -type f -exec ls -lh {} \; | sort
+
+        echo ""
+        echo "=== Platform-specific Executables ==="
+
+        echo "macOS executables:"
+        find release/macOS -name "*.dmg" -o -name "*.zip" 2>/dev/null || echo "No macOS executables found"
+
+        echo "Windows executables:"
+        find release/Windows -name "*.exe" -o -name "*.msi" -o -name "*.zip" 2>/dev/null || echo "No Windows executables found"
+
+        echo "Linux executables:"
+        find release/Linux -name "*.AppImage" -o -name "*.tar.gz" -o -name "*.deb" -o -name "*.rpm" 2>/dev/null || echo "No Linux executables found"
+
+        # Count files
+        TOTAL_FILES=$(find release -type f | wc -l)
+        echo ""
+        echo "Total release files: $TOTAL_FILES"
+
+        if [ $TOTAL_FILES -eq 0 ]; then
+          echo "⚠️  Warning: No release files found!"
+          exit 1
+        else
+          echo "✅ Release files successfully organized"
+        fi
+
+    - name: Create release archive
+      run: |
+        echo "Creating release archive..."
+        tar -czf ssh-organizer-release-$(date +%Y%m%d-%H%M%S).tar.gz -C release .
+
+        # Also create platform-specific archives
+        if [ -d "release/macOS" ] && [ "$(ls -A release/macOS)" ]; then
+          tar -czf ssh-organizer-macos-$(date +%Y%m%d-%H%M%S).tar.gz -C release/macOS .
+        fi
+
+        if [ -d "release/Windows" ] && [ "$(ls -A release/Windows)" ]; then
+          tar -czf ssh-organizer-windows-$(date +%Y%m%d-%H%M%S).tar.gz -C release/Windows .
+        fi
+
+        if [ -d "release/Linux" ] && [ "$(ls -A release/Linux)" ]; then
+          tar -czf ssh-organizer-linux-$(date +%Y%m%d-%H%M%S).tar.gz -C release/Linux .
+        fi
+
+        echo "Archive contents:"
+        ls -lh *.tar.gz
+
+    - name: Upload final release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ssh-organizer-final-release-${{ github.run_number }}
+        path: |
+          release/
+          *.tar.gz
+        retention-days: 180
+
+    - name: Summary
+      run: |
+        echo "🎉 Release deployment completed successfully!"
+        echo ""
+        echo "📦 Release artifacts created:"
+        ls -lh release/*/* 2>/dev/null || echo "Direct platform files not found, check archive contents"
+        echo ""
+        echo "📁 Release archives created:"
+        ls -lh *.tar.gz
+        echo ""
+        echo "📋 Release artifacts have been uploaded and are available for download from the Actions tab."
+        echo "💾 Release files are organized in platform-specific folders: macOS/, Windows/, Linux/"
