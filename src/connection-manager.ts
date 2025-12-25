@@ -1,4 +1,3 @@
-import * as keytar from 'keytar';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
@@ -7,7 +6,6 @@ import { ConnectionProfile, AuthType, ConnectionCredentials, ConnectionResult, A
 import { logger } from './logger';
 import { TerminalManager } from './terminal-manager';
 
-const SERVICE_NAME = 'ssh-connection-manager';
 const PROFILES_FILE = path.join(os.homedir(), '.ssh-manager', 'profiles.json');
 
 export class ConnectionManager {
@@ -66,6 +64,13 @@ export class ConnectionManager {
 
   async getActiveConnections(): Promise<ActiveConnection[]> {
     return Array.from(this.activeConnections.values());
+  }
+
+  getConfigurationPaths(): { profilesFile: string; profilesDir: string } {
+    return {
+      profilesFile: PROFILES_FILE,
+      profilesDir: path.dirname(PROFILES_FILE)
+    };
   }
 
   async disconnectSSH(activeConnectionId: string): Promise<ConnectionResult> {
@@ -160,7 +165,7 @@ export class ConnectionManager {
     }
   }
 
-  async saveConnection(profile: ConnectionProfile, credentials?: ConnectionCredentials): Promise<ConnectionResult> {
+  async saveConnection(profile: ConnectionProfile): Promise<ConnectionResult> {
     logger.info(`Saving connection: ${profile.name} (${profile.username}@${profile.hostname}:${profile.port})`);
     try {
       const existingIndex = this.profiles.findIndex(p => p.id === profile.id);
@@ -171,16 +176,6 @@ export class ConnectionManager {
         updatedAt: now,
         createdAt: existingIndex === -1 ? now : this.profiles[existingIndex].createdAt
       };
-
-      if (credentials) {
-        // Store credentials securely in keychain
-        if (credentials.password) {
-          await keytar.setPassword(SERVICE_NAME, `${profile.id}_password`, credentials.password);
-        }
-        if (credentials.privateKeyPassphrase) {
-          await keytar.setPassword(SERVICE_NAME, `${profile.id}_passphrase`, credentials.privateKeyPassphrase);
-        }
-      }
 
       if (existingIndex === -1) {
         this.profiles.push(updatedProfile);
@@ -204,18 +199,6 @@ export class ConnectionManager {
       const index = this.profiles.findIndex(p => p.id === id);
       if (index === -1) {
         return { success: false, error: 'Connection not found' };
-      }
-
-      // Remove credentials from keychain
-      try {
-        await keytar.deletePassword(SERVICE_NAME, `${id}_password`);
-      } catch (e) {
-        // Password might not exist
-      }
-      try {
-        await keytar.deletePassword(SERVICE_NAME, `${id}_passphrase`);
-      } catch (e) {
-        // Passphrase might not exist
       }
 
       this.profiles.splice(index, 1);
@@ -374,20 +357,16 @@ export class ConnectionManager {
 
         // Check if private key needs passphrase
         if (profile.authType === AuthType.PRIVATE_KEY_WITH_PASSWORD) {
-          const passphrase = await keytar.getPassword(SERVICE_NAME, `${profile.id}_passphrase`);
-          if (!passphrase) {
+          if (!profile.privateKeyPassphrase) {
             return { success: false, error: 'Private key passphrase not found. Please re-enter credentials.' };
           }
           // Note: SSH agent or expect script would be needed to handle passphrase automatically
           // For now, user will be prompted
         }
       } else if (profile.authType === AuthType.PASSWORD) {
-        const password = await keytar.getPassword(SERVICE_NAME, `${profile.id}_password`);
-        if (!password) {
+        if (!profile.password) {
           return { success: false, error: 'Password not found. Please re-enter credentials.' };
         }
-        // Note: sshpass or expect would be needed to handle password automatically
-        // For now, user will be prompted
       }
 
       args.push(`${profile.username}@${profile.hostname}`);
@@ -410,14 +389,22 @@ export class ConnectionManager {
       logger.info(`SSH args for ${profile.name}: ${sshArgs.args?.join(' ')}`);
       let terminalProcess;
 
+      // Build SSH command with password if needed
+      let sshCommand: string;
+      if (profile.authType === AuthType.PASSWORD && profile.password) {
+        // Use sshpass to handle password authentication
+        sshCommand = `sshpass -p '${profile.password.replace(/'/g, "'\\''")}' ssh ${sshArgs.args?.join(' ') || ''}`;
+      } else {
+        sshCommand = `ssh ${sshArgs.args?.join(' ') || ''}`;
+      }
+
       if (process.platform === 'darwin') {
         // macOS - Use AppleScript to open Terminal.app with SSH command
-        const sshCommand = `ssh ${sshArgs.args?.join(' ') || ''}`;
         logger.info(`Executing SSH command: ${sshCommand}`);
 
         terminalProcess = spawn('osascript', [
           '-e', 'tell application "Terminal" to activate',
-          '-e', `tell application "Terminal" to do script "${sshCommand}"`
+          '-e', `tell application "Terminal" to do script "${sshCommand.replace(/"/g, '\\"')}"`
         ], {
           detached: true,
           stdio: ['ignore', 'pipe', 'pipe']
@@ -433,14 +420,12 @@ export class ConnectionManager {
         });
       } else if (process.platform === 'win32') {
         // Windows - Use cmd to start a new command prompt with SSH
-        const sshCommand = `ssh ${sshArgs.args?.join(' ') || ''}`;
         terminalProcess = spawn('cmd', ['/c', 'start', 'cmd', '/k', sshCommand], {
           detached: true,
           stdio: 'ignore'
         });
       } else {
         // Linux - Use gnome-terminal or default terminal
-        const sshCommand = `ssh ${sshArgs.args?.join(' ') || ''}`;
         terminalProcess = spawn('gnome-terminal', ['--', 'bash', '-c', `${sshCommand}; exec bash`], {
           detached: true,
           stdio: 'ignore'

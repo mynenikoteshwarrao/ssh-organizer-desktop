@@ -14,10 +14,12 @@ const ConnectionForm: React.FC<ConnectionFormProps> = ({
 }) => {
   const [connection, setConnection] = useState<ConnectionProfile>(initialConnection);
   const [credentials, setCredentials] = useState({
-    password: '',
-    privateKeyPassphrase: '',
+    password: initialConnection.password || '',
+    privateKeyPassphrase: initialConnection.privateKeyPassphrase || '',
   });
   const [testing, setTesting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassphrase, setShowPassphrase] = useState(false);
 
   const isNewConnection = !connection.createdAt || connection.createdAt === connection.updatedAt;
 
@@ -82,7 +84,22 @@ const ConnectionForm: React.FC<ConnectionFormProps> = ({
       return;
     }
 
-    onSave(connection);
+    // Save passwords directly in the profile
+    const updatedConnection = { ...connection };
+
+    if (connection.authType === AuthType.PASSWORD) {
+      if (!credentials.password && isNewConnection) {
+        alert('Password is required for new connections');
+        return;
+      }
+      updatedConnection.password = credentials.password;
+    }
+
+    if (connection.authType === AuthType.PRIVATE_KEY_WITH_PASSWORD) {
+      updatedConnection.privateKeyPassphrase = credentials.privateKeyPassphrase;
+    }
+
+    onSave(updatedConnection);
   };
 
   const needsPassword = connection.authType === AuthType.PASSWORD;
@@ -175,26 +192,48 @@ const ConnectionForm: React.FC<ConnectionFormProps> = ({
         {needsPassword && (
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              value={credentials.password}
-              onChange={(e) => handleCredentialChange('password', e.target.value)}
-              placeholder="Enter password"
-            />
-            <small>Password will be stored securely in your system keychain</small>
+            <div className="password-input-group">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={credentials.password}
+                onChange={(e) => handleCredentialChange('password', e.target.value)}
+                placeholder={isNewConnection ? "Enter password" : "Enter password"}
+              />
+              <button
+                type="button"
+                className="btn btn-secondary password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            <small>
+              Password will be stored in the profile configuration file.
+            </small>
           </div>
         )}
 
         {needsPassphrase && (
           <div className="form-group">
             <label>Private Key Passphrase</label>
-            <input
-              type="password"
-              value={credentials.privateKeyPassphrase}
-              onChange={(e) => handleCredentialChange('privateKeyPassphrase', e.target.value)}
-              placeholder="Enter passphrase (leave blank if none)"
-            />
-            <small>Passphrase will be stored securely in your system keychain</small>
+            <div className="password-input-group">
+              <input
+                type={showPassphrase ? "text" : "password"}
+                value={credentials.privateKeyPassphrase}
+                onChange={(e) => handleCredentialChange('privateKeyPassphrase', e.target.value)}
+                placeholder="Enter passphrase (leave blank if none)"
+              />
+              <button
+                type="button"
+                className="btn btn-secondary password-toggle"
+                onClick={() => setShowPassphrase(!showPassphrase)}
+              >
+                {showPassphrase ? "Hide" : "Show"}
+              </button>
+            </div>
+            <small>
+              Passphrase will be stored in the profile configuration file.
+            </small>
           </div>
         )}
 

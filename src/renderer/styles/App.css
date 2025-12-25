@@ -319,6 +319,21 @@ body {
   flex: 1;
 }
 
+.password-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.password-input-group input {
+  flex: 1;
+}
+
+.password-toggle {
+  padding: 8px 12px;
+  min-width: 60px;
+  font-size: 12px;
+}
+
 .form-actions {
   padding: 24px 32px;
   border-top: 1px solid #f0f0f0;
@@ -890,4 +905,112 @@ body {
   .logger-content {
     max-height: 150px;
   }
+}
+
+/* ConfigInfo Component */
+.config-info {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+.config-header {
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e9ecef;
+  border-radius: 8px 8px 0 0;
+  user-select: none;
+}
+
+.config-header:hover {
+  background: #dee2e6;
+}
+
+.config-title {
+  font-weight: 600;
+  color: #495057;
+}
+
+.config-toggle {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.config-content {
+  padding: 16px;
+}
+
+.config-section {
+  margin-bottom: 20px;
+}
+
+.config-section:last-of-type {
+  margin-bottom: 16px;
+}
+
+.config-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.config-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 8px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.path-text {
+  flex: 1;
+  word-break: break-all;
+  font-size: 12px;
+  color: #495057;
+}
+
+.path-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-small {
+  padding: 4px 8px;
+  font-size: 12px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-small:hover {
+  background: #0056b3;
+}
+
+.config-description {
+  margin: 0;
+  color: #6c757d;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.config-warning {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #856404;
 }

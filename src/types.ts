@@ -6,6 +6,8 @@ export interface ConnectionProfile {
   username: string;
   authType: AuthType;
   privateKeyPath?: string;
+  password?: string;
+  privateKeyPassphrase?: string;
   description?: string;
   tags?: string[];
   createdAt: string;

@@ -4,6 +4,7 @@ import { LogEntry } from '../logger';
 import ConnectionList from './components/ConnectionList';
 import ConnectionForm from './components/ConnectionForm';
 import ActiveConnections from './components/ActiveConnections';
+import ConfigInfo from './components/ConfigInfo';
 // External terminals are used - no embedded terminal manager needed
 import Logger from './components/Logger';
 import './styles/App.css';
@@ -241,6 +242,8 @@ const App: React.FC = () => {
           <div className="welcome">
             <h3>SSH Connection Manager</h3>
             <p>Select a connection from the sidebar to connect, or create a new one.</p>
+
+            <ConfigInfo />
 
             <ActiveConnections
               activeConnections={state.activeConnections}

@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
-import { ConnectionProfile } from './types';
+import { ConnectionProfile, ConnectionCredentials } from './types';
 import { ConnectionManager } from './connection-manager';
 import { logger } from './logger';
 
@@ -76,6 +76,10 @@ class SSHConnectionManager {
 
     ipcMain.handle('disconnect-all', async () => {
       return await this.connectionManager.disconnectAll();
+    });
+
+    ipcMain.handle('get-config-paths', () => {
+      return this.connectionManager.getConfigurationPaths();
     });
 
     // Terminal IPC handlers

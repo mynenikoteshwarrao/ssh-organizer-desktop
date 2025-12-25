@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { ConnectionProfile, ConnectionResult, ActiveConnection } from './types';
+import { ConnectionProfile, ConnectionResult, ActiveConnection, ConnectionCredentials } from './types';
 import { LogEntry } from './logger';
 
 const electronAPI = {
@@ -27,6 +27,9 @@ const electronAPI = {
 
   disconnectAll: (): Promise<ConnectionResult> =>
     ipcRenderer.invoke('disconnect-all'),
+
+  getConfigPaths: (): Promise<{ profilesFile: string; profilesDir: string }> =>
+    ipcRenderer.invoke('get-config-paths'),
 
   // Terminal API
   createTerminal: (terminalId: string, connectionName: string): Promise<ConnectionResult> =>
